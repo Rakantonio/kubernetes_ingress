@@ -305,7 +305,7 @@ replicas: 3
 
 $ kubectl apply -f tacos-deployment.yml
 ```
-* Voir la liste des pods qui se sont créés (3 tacos-webapp liés au déploiement tacos-webapp 3/3)
+* Voir la liste des pods qui se sont créés (3 tacos-webapp liés au déploiement tacos-webapp 3/3) et récupérer le nom du ReplicaSet
 ```bash=
 $ kubectl get deployments
 NAME            READY   UP-TO-DATE   AVAILABLE   AGE
