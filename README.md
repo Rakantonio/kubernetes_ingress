@@ -322,7 +322,7 @@ tacos-webapp-5494fcdf7     3         3         3       86m
 
 * Vérifier que la charge est bien répartie dans les logs du déploiement
 ```bash=
-$ kubectl logs rs/tacos-webapp-5494fcdf7
+$ kubectl logs -f rs/tacos-webapp-5494fcdf7
 ```
 ![](https://i.imgur.com/PBDfUEd.png)
 
