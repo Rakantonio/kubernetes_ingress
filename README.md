@@ -329,8 +329,7 @@ $ kubectl logs rs/tacos-webapp-5494fcdf7
 
 ## Créer une nouvelle version de votre carte des pizzas et publiez-la dans une nouvelle version de votre image. Appliquer la modification à votre déploiement. Qu’observez vous sur la disponibilité du service qui présente la carte des pizzas pendant la mise à jour ? 
 
-Pour mieux visualiser celà vous pouvez en parallèle de la mise à jour exécuter les
-commandes suivantes dans d’autres terminaux :
-● watch -n 1 -c kubectl get pods
-● watch -n 1 -c curl mypizza.eatsout.com
+Pour mieux visualiser celà vous pouvez en parallèle de la mise à jour exécuter les commandes suivantes dans d’autres terminaux :
+* watch -n 1 -c kubectl get pods
+* watch -n 1 -c curl mypizza.eatsout.com
 
