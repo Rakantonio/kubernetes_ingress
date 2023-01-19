@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: pizza-webservice
+  labels:
+    run: pizza-webapp
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    run: pizza-webapp
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pizza-webapp
+spec:
+  selector:
+    matchLabels:
+      run: pizza-webapp
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: pizza-webapp
+    spec:
+      containers:
+      - name: pizza-webapp
+        image: rakantonio/fastfood:pizza
+        ports:
+        - containerPort: 80

@@ -1,0 +1,36 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: fastfood-webapp
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - host: mypizza.eatsout.com
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: pizza-webservice
+            port:
+              number: 80
+  - host: burgerandtacos.eatsout.com
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/burger"
+        backend:
+          service:
+            name: burger-webservice
+            port:
+              number: 80
+      - pathType: Prefix
+        path: "/tacos"
+        backend:
+          service:
+            name: tacos-webservice
+            port:
+              number: 80
+

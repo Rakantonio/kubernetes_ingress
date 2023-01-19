@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: tacos-webservice
+  labels:
+    run: tacos-webapp
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    run: tacos-webapp
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tacos-webapp
+spec:
+  selector:
+    matchLabels:
+      run: tacos-webapp
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        run: tacos-webapp
+    spec:
+      containers:
+      - name: tacos-webapp
+        image: rakantonio/fastfood:tacos
+        ports:
+        - containerPort: 80
