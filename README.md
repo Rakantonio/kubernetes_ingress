@@ -395,7 +395,7 @@ $ kubectl rollout restart deployment/pizza-webapp
 $ watch -n 1 -c kubectl get pods
 ```
 ![](https://i.imgur.com/y0sz25l.png)
-> La commande **rollout restart** va donc lancer un nouveau déploiement. Une fois que le déploiement est en mode **running**, l'ancienne déploiement se met en état **Terminated**.
+> La commande **rollout restart** va donc lancer un nouveau déploiement. Une fois que le déploiement est en mode **running**, l'ancien déploiement se met en état **Terminated**.
 
 ```bash=
 $ watch -n 1 -c curl mypizza.eatsout.com
