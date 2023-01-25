@@ -305,13 +305,22 @@ replicas: 3
 
 $ kubectl apply -f tacos-deployment.yml
 ```
-* Voir la liste des pods qui se sont créés (3 tacos-webapp liés au déploiement tacos-webapp 3/3) et récupérer le nom du ReplicaSet
+* Voir la liste des pods qui se sont créés (3 tacos-webapp liés au déploiement tacos-webapp 3/3)
 ```bash=
 $ kubectl get deployments
 NAME            READY   UP-TO-DATE   AVAILABLE   AGE
 burger-webapp   1/1     1            1           62m
 pizza-webapp    1/1     1            1           62m
 tacos-webapp    3/3     3            3           62m
+
+$ kubectl get pods
+NAME                             READY   STATUS    RESTARTS       AGE
+burger-webapp-5b5c49f6c6-gq8w8   1/1     Running   2 (170m ago)   5d20h
+pizza-webapp-c75b477d6-frm7q     1/1     Running   0              7m51s
+tacos-webapp-5494fcdf7-8f77m     1/1     Running   2 (170m ago)   5d19h
+tacos-webapp-5494fcdf7-jwhhl     1/1     Running   2 (170m ago)   5d20h
+tacos-webapp-5494fcdf7-v97bw     1/1     Running   2 (170m ago)   5d19h
+
 
 $ kubectl get rs
 NAME                       DESIRED   CURRENT   READY   AGE
@@ -320,16 +329,84 @@ pizza-webapp-846f44fcf7    1         1         1       86m
 tacos-webapp-5494fcdf7     3         3         3       86m
 ```
 
-* Vérifier que la charge soit bien répartie dans les logs du déploiement
+* Vérifier que la charge est bien répartie dans les logs du déploiement
+Ouvrir 3 terminales en faisant un kubectl logs -f des 3 pods tacos
 ```bash=
-$ kubectl logs -f rs/tacos-webapp-5494fcdf7
+$ kubectl logs -f pod/tacos-webapp-5494fcdf7-8f77m
+$ kubectl logs -f pod/tacos-webapp-5494fcdf7-v97bw
+$ kubectl logs -f pod/tacos-webapp-5494fcdf7-jwhhl
 ```
-![](https://i.imgur.com/PBDfUEd.png)
+En actualisant plusieurs fois le site http://burgerandtacos.eatsout.com/tacos, on peut constater que les requêtes se répartissent entre les 3 pods. La charge est donc bien répartie entre les 3 replicas. 
 
+![](https://i.imgur.com/c2Lw5Te.png)
 
 ## Créer une nouvelle version de votre carte des pizzas et publiez-la dans une nouvelle version de votre image. Appliquer la modification à votre déploiement. Qu’observez vous sur la disponibilité du service qui présente la carte des pizzas pendant la mise à jour ? 
 
 Pour mieux visualiser celà vous pouvez en parallèle de la mise à jour exécuter les commandes suivantes dans d’autres terminaux :
-* watch -n 1 -c kubectl get pods
-* watch -n 1 -c curl mypizza.eatsout.com
+> watch -n 1 -c kubectl get pods  
+> watch -n 1 -c curl mypizza.eatsout.com
+
+* Modifier le fichier de déploiement en ajoutant l'option "imagePullPolicy". Cette option est nécessaire pour que le déploiement récupère la bonne image.
+```bash=
+$ vim pizza-deployment.yaml
+spec:
+      containers:
+      - name: pizza-webapp
+        image: rakantonio/fastfood:pizza
+        imagePullPolicy: Always
+```
+* Relancer le déploiement
+```bash=
+$ kubectl apply -f pizza-deployment.yml
+```
+* Modifier le fichier index.html dans le dossier pizza
+* Faire un build du Dockerfile dans le dossier pizza une fois le fichier index modifié
+```bash=
+$ docker build -t pizzaimg .
+```
+* Retagger la nouvelle image avec le même tag 'pizza' pour pouvoir le push sur le même repository
+```bash=
+$ docker tag pizzaimg:latest rakantonio/fastfood:pizza
+```
+* Faire un push de l'image sur le repository fastfood. L'image sera alors mise à jour avec les nouvelles modifications
+```bash=
+$ docker push rakantonio/fastfood:pizza 
+```
+* Faire un pull de la nouvelle image
+```bash=
+$ docker pull rakantonio/fastfood:pizza 
+```
+* Lancer les commandes `watch -n 1 -c kubectl get pods` et `watch -n 1 -c curl mypizza.eatsout.com`
+```bash=
+$ watch -n 1 -c kubectl get pods
+```
+![](https://i.imgur.com/oJfsevj.png)
+```bash=
+$ watch -n 1 -c curl mypizza.eatsout.com
+```
+![](https://i.imgur.com/gIzKVv1.png)
+
+* Relancer le déploiement pour prendre en compte l'update de l'image
+```bash=
+$ kubectl rollout restart deployment/pizza-webapp
+```
+* Vérifier les changements avec les commandes `watch -n 1 -c kubectl get pods` et `watch -n 1 -c curl mypizza.eatsout.com`
+```bash=
+$ watch -n 1 -c kubectl get pods
+```
+![](https://i.imgur.com/y0sz25l.png)
+> La commande **rollout restart** va donc lancer un nouveau déploiement. Une fois que le déploiement est en mode **running**, l'ancienne déploiement se met en état **Terminated**.
+
+```bash=
+$ watch -n 1 -c curl mypizza.eatsout.com
+```
+> Le site est donc presque toujours disponible car le nouveau déploiement est déjà en état running avant que l'ancien se termine. Une fois que le déploiement s'est créé, la commande affiche les nouvelles modifications du index.html (du site web).
+
+![](https://i.imgur.com/wQjmko7.png)
+
+http://mypizza.eatsout.com/
+
+![](https://i.imgur.com/v4krzPw.png)
+
+
 

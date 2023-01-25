@@ -29,5 +29,6 @@ spec:
       containers:
       - name: pizza-webapp
         image: rakantonio/fastfood:pizza
+        imagePullPolicy: Always
         ports:
         - containerPort: 80
