@@ -286,7 +286,7 @@ Cache de résolution DNS vidé.
 
 * http://burgerandtacos.eatsout.com/burger
 
-![](https://i.imgur.com/bv9gdbp.png)
+![](https://i.imgur.com/hO7x70t.jpg)
 
 * http://mypizza.eatsout.com/
 
