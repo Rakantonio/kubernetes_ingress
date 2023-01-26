@@ -400,7 +400,7 @@ $ watch -n 1 -c kubectl get pods
 ```bash=
 $ watch -n 1 -c curl mypizza.eatsout.com
 ```
-> Le site est donc presque toujours disponible car le nouveau déploiement est déjà en état running avant que l'ancien se termine. Une fois que le déploiement s'est créé, la commande affiche les nouvelles modifications du index.html (du site web).
+> Le site est donc toujours disponible car le nouveau déploiement est déjà en état running avant que l'ancien se termine. Une fois que le déploiement s'est créé, la commande affiche les nouvelles modifications du index.html (du site web).
 
 ![](https://i.imgur.com/wQjmko7.png)
 
